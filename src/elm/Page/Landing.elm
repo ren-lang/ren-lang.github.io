@@ -9,6 +9,8 @@ import Ren.Compiler exposing (Target(..))
 import Svg
 import Svg.Attributes
 import UI.Components.CodeFlask
+import UI.Elements.Feature exposing (Aside(..))
+import UI.Text
 
 
 
@@ -85,18 +87,18 @@ view model =
 viewSectionIntro : Model -> Html Msg
 viewSectionIntro model =
     Html.section
-        [ Html.Attributes.class "min-h-screen w-screen relative"
+        [ Html.Attributes.class "min-h-screen relative"
         , Html.Attributes.class "bg-gray-50"
         , Html.Attributes.class "py-32"
         , Html.Attributes.class "flex flex-col items-center justify-center space-y-24"
         ]
         [ Html.div
-            [ Html.Attributes.class "text-center space-y-8 px-4" ]
+            [ Html.Attributes.class "mx-auto text-center space-y-8 px-4" ]
             [ viewTagline
             , viewSubheading
             ]
         , Html.p
-            [ Html.Attributes.class "text-justify max-w-prose px-8" ]
+            [ Html.Attributes.class "mx-auto text-justify max-w-prose px-8" ]
             [ Html.text <|
                 "Ren is a functional, immutable-by-default, dynamically typed "
                     ++ "scripting language. Combining productive functional "
@@ -112,11 +114,10 @@ viewSectionIntro model =
 viewTagline : Html msg
 viewTagline =
     Html.h1
-        [ Html.Attributes.class "text-6xl font-bold text-transparent"
-        , Html.Attributes.class "bg-gradient-to-r bg-clip-text"
-        , Html.Attributes.class "from-ren-pink-600 to-ren-orange-500"
+        [ Html.Attributes.class "text-6xl" ]
+        [ UI.Text.emphasis ( "ren-pink-600", "ren-orange-500" )
+            "Cleaner, clearer JavaScript."
         ]
-        [ Html.text "Cleaner, clearer JavaScript." ]
 
 
 viewSubheading : Html msg
@@ -289,29 +290,21 @@ viewWaves =
 viewSectionFeatures : Html msg
 viewSectionFeatures =
     Html.section
-        [ Html.Attributes.class "min-h-screen w-screen"
-        , Html.Attributes.class "bg-ren-dark-blue-500"
+        [ Html.Attributes.class "bg-ren-dark-blue-500"
         , Html.Attributes.class "py-32"
         , Html.Attributes.class "space-y-32"
+        , Html.Attributes.class "flex flex-col items-center"
         ]
         [ viewNoNPMFeature
         , viewNoTypesFeature
+        , viewTestsFeature
         ]
-
-
-viewFeature : Html msg -> Html msg -> Html msg
-viewFeature left right =
-    Html.article
-        [ Html.Attributes.class "flex flex-col md:flex-row w-full items-center"
-        , Html.Attributes.class "sm:px-4 lg:px-12"
-        ]
-        [ left, right ]
 
 
 viewNoNPMFeature : Html msg
 viewNoNPMFeature =
     let
-        code =
+        src =
             String.trim """
 <head>
   <script type="module" src="https://cdn.skypack.dev/ren-lang/compiler"></script>
@@ -325,44 +318,31 @@ viewNoNPMFeature =
 </head>
 """
     in
-    viewFeature
-        (Html.div
-            [ Html.Attributes.class "flex-1 mx-12" ]
-            [ Html.h2
-                [ Html.Attributes.class "text-gray-50 text-4xl"
-                , Html.Attributes.class "mb-4"
-                ]
-                [ Html.text "Install from npm, "
-                , Html.span
-                    [ Html.Attributes.class "inline-block"
-                    , Html.Attributes.class "font-bold text-transparent"
-                    , Html.Attributes.class "bg-gradient-to-r bg-clip-text"
-                    , Html.Attributes.class "from-ren-pink-400 to-ren-pink-600"
-                    ]
-                    [ Html.text "or don't" ]
-                , Html.text "."
-                ]
-            , Html.p
-                [ Html.Attributes.class "text-white text-lg" ]
-                [ Html.text <|
-                    "Drop a single script tag in your HTML and start writing "
-                        ++ "Ren immediately. Prefer npm? You can find us there "
-                        ++ "too."
-                ]
+    UI.Elements.Feature.codeFeature ( Right, "html", src )
+        []
+        [ Html.h2
+            [ Html.Attributes.class "text-gray-50 text-4xl"
+            , Html.Attributes.class "mb-4"
             ]
-        )
-        (UI.Components.CodeFlask.view code
-            [ Html.Attributes.class "flex-1 h-64 mx-12 rounded"
-            , UI.Components.CodeFlask.readonly True
-            , UI.Components.CodeFlask.language "html"
+            [ Html.text "Install from npm, "
+            , UI.Text.emphasis ( "ren-pink-500", "ren-pink-600" )
+                "or don't"
+            , Html.text "."
             ]
-        )
+        , Html.p
+            [ Html.Attributes.class "text-white text-lg" ]
+            [ Html.text <|
+                "Drop a single script tag in your HTML and start writing "
+                    ++ "Ren immediately. Prefer npm? You can find us there "
+                    ++ "too."
+            ]
+        ]
 
 
 viewNoTypesFeature : Html msg
 viewNoTypesFeature =
     let
-        code =
+        src =
             String.trim """
 pub fun calculateArea = value =>
     when value
@@ -377,34 +357,64 @@ pub fun calculateArea = value =>
         is { getArea: @Function f } => f ()
 """
     in
-    viewFeature
-        (UI.Components.CodeFlask.view code
-            [ Html.Attributes.class "flex-1 h-64 mx-12 rounded"
-            , UI.Components.CodeFlask.readonly True
-            , UI.Components.CodeFlask.language "ren"
+    UI.Elements.Feature.codeFeature ( Left, "ren", src )
+        []
+        [ Html.h2
+            [ Html.Attributes.class "text-gray-50 text-4xl"
+            , Html.Attributes.class "mb-4"
             ]
-        )
-        (Html.div
-            [ Html.Attributes.class "flex-1 mx-12" ]
-            [ Html.h2
-                [ Html.Attributes.class "text-gray-50 text-4xl"
-                , Html.Attributes.class "mb-4"
-                ]
-                [ Html.text "No types? "
-                , Html.span
-                    [ Html.Attributes.class "inline-block"
-                    , Html.Attributes.class "font-bold text-transparent"
-                    , Html.Attributes.class "bg-gradient-to-r bg-clip-text"
-                    , Html.Attributes.class "from-ren-yellow-400 to-ren-orange-400"
-                    ]
-                    [ Html.text "No problem" ]
-                , Html.text "."
-                ]
-            , Html.p
-                [ Html.Attributes.class "text-white text-lg" ]
-                [ Html.text <|
-                    "Powerful pattern matching gives you the tools to handle "
-                        ++ "dynamic code effortlessly."
-                ]
+            [ Html.text "No types? "
+            , UI.Text.emphasis ( "ren-yellow-400", "ren-orange-400" )
+                "No problem"
+            , Html.text "."
             ]
-        )
+        , Html.p
+            [ Html.Attributes.class "text-white text-lg" ]
+            [ Html.text <|
+                "Powerful pattern matching gives you the tools to handle "
+                    ++ "dynamic code effortlessly."
+            ]
+        ]
+
+
+viewTestsFeature : Html msg
+viewTestsFeature =
+    let
+        src =
+            String.trim """
+pub fun eval = expr =>
+    when String.split ' ' expr
+        is [ x, '+', y ] => x + y
+        is [ x, '-', y ] => x - y
+        is [ x, '*', y ] => x * y
+        is [ x, '/', y ] => x / y
+        is [ x, '%', y ] => x % y
+    where {
+        fun isEven = n => n % 2 == 0
+
+        assert eval '1 + 2' is 3 because 1 + 2
+        assert eval '2 / 3' is-roughly 0.6
+        assert eval '4 % 2' satisfies isEven
+        assert eval 'zero' throws !UnhandledPatternException
+    }
+"""
+    in
+    UI.Elements.Feature.codeFeature ( Right, "ren", src )
+        []
+        [ Html.h2
+            [ Html.Attributes.class "text-gray-50 text-4xl"
+            , Html.Attributes.class "mb-4"
+            ]
+            [ UI.Text.emphasis ( "ren-blue-400", "ren-blue-200" )
+                "First-class tests"
+            , Html.text "."
+            ]
+        , Html.p
+            [ Html.Attributes.class "text-white text-lg" ]
+            [ Html.text <|
+                "Testing constructs for floating-point tolerance, predicate "
+                    ++ "satisfication, and exception handling are built into Ren. "
+                    ++ "Co-locate definitions and tests, and automatically run them "
+                    ++ "during compilation."
+            ]
+        ]
