@@ -2,11 +2,11 @@
   "name": "ren-lang.github.io",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "docs/index.html",
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html --dist-dir docs --no-source-maps --no-content-hash",
-    "deploy": "git add docs/* && git commit -m \":rocket: Deploy to gh-pages. && git push\""
+    "deploy": "npm run build && git add docs/* && git commit -m \":rocket: Deploy to gh-pages.\" && git push"
   },
   "author": "",
   "license": "MIT",
