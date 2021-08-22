@@ -72,6 +72,11 @@ export class CodeFlask extends HTMLElement {
 
 }
 
+const renKeywords = ['import', 'assert', 'exposing', 'pub', 'let', 'fun', 'enum',
+    'ret', 'as', 'is-roughly', 'because', 'if', 'then', 'else', 'when', 'is',
+    'where', 'satisfies', 'throws'
+]
+
 const renLanguageDefinition = {
     'comment': [
         {
@@ -106,7 +111,7 @@ const renLanguageDefinition = {
             'string': /[\s\S]+/
         }
     },
-    'keyword': /import|as|exposing|pub|let|fun|enum|ret|if|then|else|when|is/,
+    'keyword': new RegExp(renKeywords.join('|')),
     'boolean': /\b(?: true | false) \b /,
     'function': null,
     'number': /\b0x[\da-f]+\b|(?:\b\d+(?:\.\d*)?|\B\.\d+)(?:e[+-]?\d+)?/i,
