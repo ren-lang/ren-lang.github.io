@@ -29,7 +29,7 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init _ =
     ( { input = String.trim """
-// Better exaple pending...
+// Better example pending...
 enum Person
     = #teacher
     | #director
